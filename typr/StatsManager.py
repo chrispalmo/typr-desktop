@@ -17,29 +17,6 @@ class StatsManager(object):
         self.load()
         self.temp=[]
         self.inst_wpm = 0
-        
-#    def save(self):
-#        
-#        date = datetime.datetime.now()
-#        
-#        if len(str(date.day)) == 1:
-#            day_str = "0"+str(date.day)
-#        else:
-#            day_str = str(date.day)
-#        date_str = filename = str(date.year)+str(date.month)+day_str
-#        filename = date_str+".stats"
-#        print("Saving file:",filename)
-#        
-#        pickle.dump(self.data,open(date_str+".stats","wb"))
-#        
-#    def load(self):
-#        try:
-#            print("loading",self.latest_file_date(),".stats")
-#            self.data = pickle.load(open(str(self.latest_file_date())+".stats","rb"))
-#            #print(self.data)
-#        except Exception as e:
-#            print("\nStatsLoader Error:\n")
-#            print(e)
 
     def save(self,filename=""):
         if filename == "":
@@ -63,18 +40,14 @@ class StatsManager(object):
             try:
                 print("loading",str(self.latest_file_date())+".stats")
                 self.data = pickle.load(open(str(self.latest_file_date())+".stats","rb"))
-                #print(self.data)
             except Exception as e:
-                print("\nAnalyser Error:\n")
-                print(e)
+                print("\nLoader Error:", e)
         else:
             try:
                 print("loading",self.latest_file_date(),".stats")
                 self.data = pickle.load(open(filename+".stats","rb"))
-                #print(self.data)
             except Exception as e:
-                print("\nAnalyser Error:\n")
-            print(e)
+                print("\nLoader Error:", e)
     
     def latest_file_date(self):        
         statfiles = []
@@ -115,16 +88,7 @@ class StatsManager(object):
                 if i[0] == True:
                     self.chars += 1
             self.inst_wpm = self.chars/seconds*60/5
-#            print("seconds=",seconds)
-#            print("chars=",chars)
             return None
     
     def get_inst_wpm(self):
         return self.inst_wpm    
-
-if __name__ == "__main__":
-    stats=StatsManager()
-    stats.update_inst_wpm(15,2)
-    print("inst_wpm=",stats.get_inst_wpm())
-    print("dt=",stats.dt)
-    pass

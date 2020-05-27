@@ -56,15 +56,7 @@ def moving_avg(data,width,threshold):
     plt.axes = plt.gca()
     plt.show()  
     
-    """
-    """
-    """
-    """
     return [x,y]
-    """
-    """
-    """
-    """
             
 def accuracy_per_char(data):
     data=wpm(data,1) #ignore time gaps greater than 1 second
@@ -82,7 +74,6 @@ def accuracy_per_char(data):
         char_stats.append([char])
     
     for char in char_stats:
-        print ("calculating accuracy for character: ",char[0])
         correct=0
         incorrect=0
         spc=[]
@@ -109,8 +100,6 @@ def accuracy_per_char(data):
             char.append(0)
 
     return sorted(char_stats, key=lambda x : x[1])
-
-    #append average WPM for all each unique character
     
 def export_csv(data, filename):  
     with open(filename, "w") as f:
@@ -118,12 +107,9 @@ def export_csv(data, filename):
         writer.writerows(data)
 
 def bubble_plot(data):
-    
     plt.style.use('ggplot')
-    
     font = {'size':25}
     matplotlib.rc('font', **font)
-
     
     x = [round(i[4]) for i in data] #accuracy
     y = [round(i[5]) for i in data] #WPM
@@ -133,19 +119,5 @@ def bubble_plot(data):
     plot = plt.scatter(x, y, s=size)  
     plt.xlabel("Accuracy (%)")
     plt.ylabel("Average WPM")
-#    plt.text(x, y, labels, size=15, horizontalalignment='center')
-#    plt.xlim(ymax = 100, ymin = 50)
-#    plt.ylim(ymax = 150, ymin = 0)
     plt.axes = plt.gca()
-#    plt.axes.set_xlim([50,100])
-#    plt.axes.set_ylim([0,110])
     plt.show()
-    
-
-
-if __name__ == "__main__":
-    print('creating Analyser object...')
-    stats = StatsManager.StatsManager() 
-#    char_stats=accuracy_per_char(stats.data)
-#    bubble_plot(char_stats)
-    moving_avg(stats.data,0,1)

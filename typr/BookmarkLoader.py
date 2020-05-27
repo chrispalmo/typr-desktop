@@ -4,7 +4,6 @@ Created on Sun Nov 12 10:45:08 2017
 
 @author: Chris Palmieri
 """
-
 import pickle
 
 class BookmarkLoader(object):
@@ -21,12 +20,4 @@ class BookmarkLoader(object):
             self.bm_dict = pickle.load(open("bookmarks.txt","rb"))
             return self.bm_dict[master.book.bookfilename]
         except Exception as e:
-            print("\nBookmarkLoader Error #1:\n")
-            print(e)
-        
-if __name__ == "__main__":
-#    print('creating root window...')
-#    root = Tk()
-#    print('creating BookmarkLoader` object...')
-#    book = EpubLoader(root)    
-    pass
+            print("\nBookmarkLoader Error", e)

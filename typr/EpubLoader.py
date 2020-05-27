@@ -69,53 +69,6 @@ class EpubLoader(object):
             print("\nCouldn't save .txt file:\n")
             print(e)
         
-        self.clean(self.content)
-            
-        if __name__ == "__main__":        
-            master.destroy()
-    
-    def clean(self, content):
-        """
-        bugs exist in this function - successfully identifies 
-        paragraphs to be cleaned but doesnt successfully remove them
-        """
-        for i in range(len(content)):
-            if type(content[i]) != str:
-                try: 
-                    content[i] = content[i].text
-                except Exception as e:
-#                    print("\e: line:", i)
-#                    print(e)
-                    pass
-                    try:
-                        content[i] = str(content[i])
-                    except Exception as e2:
-#                        print("\e2: line:", i)
-#                        print(e2)
-                        pass
-        #remove paragraphs with no text
-        i=0
-        for para in content:
-            if type(re.search('[a-zA-Z]', para)) == type(None):
-#                print("no chars in line",i,":",para)
-                content.pop(i)
-            elif len(para) < 6:
-#                print("length of line",i,":",len(para))
-                content.pop(i)
-            else:
-                i+=1
-        
-#    def save_temp(self):
-#        with open(self.bookfilename+".temp","x", 
-#                  encoding="utf-8") as temp_file:
-#            temp_file.write('\n'.join(self.content))
-#    
-#    def load_temp(self):
-#        with open(self.bookfilename+".temp","r", 
-#                  encoding="utf-8") as temp_file:
-#            self.content = temp_file.readlines()
-#            self.content = ''.join(self.content).split('\n')  
-    
     def save_txt(self, master):
         pickle.dump(self.content,open(self.bookfilename+".txt","wb"))
         
@@ -157,31 +110,15 @@ class EpubLoader(object):
     def get_tags(self, tag):
         """returns a list of lists containing only items bound by <tag>,
         for each chapter (i.e each .xhtml file within the .EPUB file)"""
-#        chapters_tagged=[]
-#        for ch_soup in self.chapters_soup:
-#            chapters_tagged.append([ch_soup.find_all(tag)[i].contents[0] for i in range(len(ch_soup.find_all(tag)))])          
-#        return chapters_tagged
         chapters_tagged=[]
         for ch_soup in self.chapters_soup:
-#            chapters_tagged += [ch_soup.find_all(tag)[i].contents[0] for i in range(len(ch_soup.find_all(tag)))]      
             chapters_tagged += [ch_soup.find_all(tag)[i].contents[0] for i in range(len(ch_soup.find_all(tag)))]      
             #clean up unwanted newlines
             try: 
                 for i in range(len(chapters_tagged)):
                     if chapters_tagged[i] != None:
                         chapters_tagged[i]=" ".join(chapters_tagged[i].split("\n"))
-#                    if type(chapters_tagged[i]) != str:
-#                        #print('chapters_tagged[',i,'] is not a string)')
-#                        #chapters_tagged[i]=chapters_tagged[i].content[0]
-#                        chapters_tagged[i].pop()
             except Exception: 
                 pass
             
         return chapters_tagged
-   
-if __name__ == "__main__":
-    print('creating root window...')
-    root = Tk()
-    root.last_book=None
-    print('creating an EpubLoader object...')
-    book = EpubLoader(root)    

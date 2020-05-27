@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 13 21:32:47 2017
+
+@author: chrispalmo
+"""
 from tkinter import *
 from tkinter import font
 from tkinter import filedialog
@@ -17,7 +22,7 @@ class typr(Tk):
         self.version = 'Typr v1.0'
         self.book = None
         self.last_book = None
-        self.win_width = 40 #width of window
+        self.win_width = 60 #width of window
                
         self.initialize_frame()
         
@@ -39,18 +44,27 @@ class typr(Tk):
         self.filemenu.add_command(label="Open", command=self.open_file)
         self.filemenu.add_command(label="Exit", command=self.close)
         
-        self.frame1 = Frame(self)
-        self.frame2 = Frame(self)     
-        self.frame1.pack(fill=BOTH)
-        self.frame2.pack(fill=BOTH)      
+        #Frame Layout
+        self.text_frame = Frame(self)
+        self.text_frame.pack(fill=BOTH)
+
+        self.timer_wpm_frame = Frame(self)
+        self.timer_wpm_frame.pack(fill=BOTH)
+
+        self.timer_frame = Frame(self.timer_wpm_frame)
+        self.timer_frame.pack(side=LEFT, fill=BOTH)
+
+        self.wpm_frame = Frame(self.timer_wpm_frame)
+        self.wpm_frame.pack(side=RIGHT, fill=BOTH)
+
         self.navpanel = NavPanel(self)
         
         #Caps Lock Warning
-        self.caps_lbl = Label(self.frame2, text="")
+        self.caps_lbl = Label(self.timer_wpm_frame, text="")
         
         #Font options
-        self.active_font = font.Font(family="monospace",size=12)
-        self.txtbox = Text(self.frame1,
+        self.active_font = font.Font(family="courier",size=12)
+        self.txtbox = Text(self.text_frame,
                            height=12,
                            width=self.win_width,
                            font=(self.active_font.cget("family"),
@@ -73,12 +87,12 @@ class typr(Tk):
                                   background="pink")
 
         #Scrollbar
-        self.scrollbar =  Scrollbar(self.frame1)
+        self.scrollbar =  Scrollbar(self.text_frame)
         self.scrollbar.config(command=self.txtbox.yview)
         self.scrollbar.pack(side = RIGHT, fill=Y)
 
         #Timer Display
-        self.timer_disp = Label(self.frame2)
+        self.timer_disp = Label(self.timer_frame)
         self.timer_disp.configure(text="Timer")
         self.timer_disp.pack()
         
@@ -86,6 +100,11 @@ class typr(Tk):
         self.idle_time_limit=1
         timer_thread = threading.Thread(name="timer_thread", target=self.timer)
         timer_thread.start()
+
+        #WPM Display
+        self.wpm_disp = Label(self.wpm_frame)
+        self.wpm_disp.configure(text="WPM: 78")
+        self.wpm_disp.pack()
         
     def timer(self):
         self.idle_time = 0

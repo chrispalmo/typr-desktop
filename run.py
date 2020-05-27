@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tkinter import *
 from tkinter import font
 from tkinter import filedialog
@@ -29,7 +30,7 @@ class typr(Tk):
     def initialize_frame(self):
         print("Initialising application...")
                 
-        # Create the menu
+        #Menu
         self.menubar = Menu(self)
         self.config(menu=self.menubar)
         
@@ -48,9 +49,9 @@ class typr(Tk):
         self.caps_lbl = Label(self.frame2, text="")
         
         #Font options
-        self.active_font = font.Font(family="monospace",size=15)
+        self.active_font = font.Font(family="monospace",size=12)
         self.txtbox = Text(self.frame1,
-                           height=24,
+                           height=12,
                            width=self.win_width,
                            font=(self.active_font.cget("family"),
                                  self.active_font.cget("size")),
@@ -71,17 +72,39 @@ class typr(Tk):
                                   foreground="red",
                                   background="pink")
 
+        #Scrollbar
         self.scrollbar =  Scrollbar(self.frame1)
         self.scrollbar.config(command=self.txtbox.yview)
         self.scrollbar.pack(side = RIGHT, fill=Y)
-        
+
         #Timer Display
         self.timer_disp = Label(self.frame2)
         self.timer_disp.configure(text="Timer")
         self.timer_disp.pack()
         
-        print("Initialisation Complete.")
-    
+        #Initialize timer
+        self.idle_time_limit=1
+        timer_thread = threading.Thread(name="timer_thread", target=self.timer)
+        timer_thread.start()
+        
+    def timer(self):
+        self.idle_time = 0
+        total_time_elapsed = 0
+        interval = 1/10
+        while True:
+            #if idle_time < self.idle_time_limit:
+            while self.idle_time > self.idle_time_limit:
+                time.sleep(interval)
+            while self.idle_time < self.idle_time_limit:
+                self.idle_time += interval
+                total_time_elapsed += interval
+                total_time_elapsed_str = 'Timer: {0:.{1}f}'.format(total_time_elapsed, 1)
+                self.timer_disp.configure(text=total_time_elapsed_str)
+                time.sleep(interval)
+            total_time_elapsed_str += ' [PAUSED]'
+            self.timer_disp.configure(text=total_time_elapsed_str)
+        return None
+
     def open_file(self):      
         self.book = EpubLoader.EpubLoader(self)
         if self.book.file == None:
@@ -139,8 +162,6 @@ class typr(Tk):
     def keypress(self, event):
         self.idle_time = 0
           
-        #Left Alt key quits program
-        if event.keycode == 18: root.destroy() #alt key to quit
         if event.keycode == 16: return None #shift key is ignored
         if event.keycode == 17: return None #ctrl key is ignored
 
@@ -157,12 +178,10 @@ class typr(Tk):
               if event.state == 0:
                     self.caps_lbl.configure(text="WARNING: Caps Lock is ON", background="red")
                     self.caps_lbl.pack()
-                    print("Caps lock is on")
                     return None
               else:
                     self.caps_lbl.configure(text="")
                     self.caps_lbl.pack_forget()
-                    print("Caps lock is off")
                     return None
         
         #Set Selection
@@ -238,10 +257,10 @@ class NavPanel(Frame):
         self.pack(fill=BOTH)
 
         BUTTON_WIDTH = 5
-        self.prev_bt = Button(self, text="<", width=BUTTON_WIDTH,
+        self.prev_bt = Button(self, text="◀", width=BUTTON_WIDTH,
                          command=master.prev_para)
         self.prev_bt.pack(side=LEFT)
-        self.next_bt = Button(self, text=">", width=BUTTON_WIDTH,
+        self.next_bt = Button(self, text="▶", width=BUTTON_WIDTH,
                          command=master.next_para)
         self.next_bt.pack(side=RIGHT)
         
